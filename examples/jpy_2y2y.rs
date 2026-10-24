@@ -7,7 +7,7 @@
 //!
 //! Run with `cargo run --example jpy_2y2y`.
 
-use smoothrates::{CurveId, DualCurveFitter, FitConfig, Instrument, Schedule};
+use quadsmooth::{CurveId, DualCurveFitter, FitConfig, Instrument, Schedule};
 
 /// Market snapshot (see README of this example / chat for sources).
 const AS_OF: &str = "2026-10-21 (TONA OIS mids, London 09:00)";
@@ -44,7 +44,7 @@ fn forward_swap(
     fixed_freq: u32,
     float_freq: u32,
     float_curve: CurveId,
-) -> Result<Instrument, smoothrates::Error> {
+) -> Result<Instrument, quadsmooth::Error> {
     let sched = |freq: u32| {
         let n = ((end - start) * freq as f64).round() as usize;
         Schedule::from_times((0..=n).map(|k| start + k as f64 / freq as f64).collect())
@@ -58,7 +58,7 @@ fn forward_swap(
     })
 }
 
-fn main() -> Result<(), smoothrates::Error> {
+fn main() -> Result<(), quadsmooth::Error> {
     println!("JPY 2y2y pricing — market as of {AS_OF}\n");
 
     // ---------------------------------------------------------------

@@ -1,4 +1,4 @@
-//! # smoothrates
+//! # quadsmooth
 //!
 //! A quadratic smooth-forward interest rate curve fitter for a dual-curve
 //! (projection + discount) framework, solved jointly with a damped Newton
@@ -30,7 +30,7 @@
 //! with the residuals, Jacobian and Hessian at the solution. See [`fitter`].
 //!
 //! ```
-//! use smoothrates::{CurveId, DualCurveFitter, FitConfig, Instrument};
+//! use quadsmooth::{CurveId, DualCurveFitter, FitConfig, Instrument};
 //!
 //! let fit = DualCurveFitter::new()
 //!     .with_config(FitConfig::default())

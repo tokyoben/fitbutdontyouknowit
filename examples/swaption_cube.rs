@@ -8,7 +8,7 @@
 //!
 //! Run with `cargo run --example swaption_cube`.
 
-use smoothrates::{
+use quadsmooth::{
     CubeConfig, CurveId, DualCurveFitter, FitConfig, Instrument, OptionType, SabrCube, SabrParams,
     Strike, SwaptionGrid, VolQuote,
 };
@@ -37,7 +37,7 @@ fn noise(seed: &mut u64) -> f64 {
     ((*seed >> 11) as f64 / (1u64 << 53) as f64) * 2.0 - 1.0
 }
 
-fn main() -> Result<(), smoothrates::Error> {
+fn main() -> Result<(), quadsmooth::Error> {
     // ---- Discount/projection curve (TONA OIS) -------------------------------
     let mut fitter = DualCurveFitter::new().with_config(FitConfig {
         lambda_curvature: 1e-10,
@@ -161,7 +161,7 @@ fn main() -> Result<(), smoothrates::Error> {
 
     // ---- 2y into 2y swaptions ----------------------------------------------
     let (e, t) = (2.0, 2.0);
-    let fwd_swap = smoothrates::cube::forward_swap(e, e + t, 1, 1, CurveId::Discount)?;
+    let fwd_swap = quadsmooth::cube::forward_swap(e, e + t, 1, 1, CurveId::Discount)?;
     let f = curve.par_rate(&fwd_swap)?;
     let annuity = if let Instrument::Swap { fixed, .. } = &fwd_swap {
         fixed

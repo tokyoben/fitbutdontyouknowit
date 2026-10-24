@@ -208,7 +208,7 @@ can be supplied through `Instrument::Swap` and `Schedule::from_times`.
 ## Example
 
 ```rust
-use smoothrates::{CurveId, DualCurveFitter, Instrument};
+use quadsmooth::{CurveId, DualCurveFitter, Instrument};
 
 let fitter = DualCurveFitter::new()
     .add(Instrument::ois(1.0, 0.030, 1)?)
@@ -289,7 +289,7 @@ this reproduces a known cube's parameters exactly).
   as in the curve fitter)
 
 ```rust
-use smoothrates::{CubeConfig, CurveId, SabrCube, Strike, SwaptionGrid, VolQuote, OptionType};
+use quadsmooth::{CubeConfig, CurveId, SabrCube, Strike, SwaptionGrid, VolQuote, OptionType};
 
 // forwards from the fitted TONA curve: annual/annual forward-starting swaps
 let grid = SwaptionGrid::from_curve(vec![1.0, 2.0, 5.0, 10.0], vec![2.0, 5.0, 10.0],
