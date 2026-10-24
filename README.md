@@ -7,8 +7,99 @@ dependencies.
 
 ```
 cargo test
-cargo run --example dual_curve
+cargo run --example dual_curve   # synthetic OIS + 3M market
+cargo run --example jpy_2y2y     # JPY 2y2y from TONA OIS benchmarks
 ```
+
+## Background (the non-quant version)
+
+### What a curve is for
+
+An interest rate curve answers one question: *what is a yen (or dollar) paid
+on some future date worth today?* That number is the **discount factor**
+`P(t)`. Everything else — zero rates, par swap rates, forward rates — is just
+a different way of writing the same information. We cannot observe `P(t)` for
+every date; we observe a few dozen traded prices (deposits, FRAs, swaps) and
+have to *infer* a whole continuum of discount factors that is consistent with
+them. That inference is what a curve fitter does.
+
+### Projection rates vs. discount rates
+
+A floating-rate swap leg involves two distinct uses of a curve:
+
+* **Projection**: *what will the floating rate fix at?* A 3M IBOR or 6M TIBOR
+  coupon is set by a panel-bank benchmark, so the expected coupon depends on
+  where that benchmark is expected to be — the **projection curve**.
+* **Discounting**: *what is that coupon worth today?* Swaps are collateralised
+  and the collateral earns the overnight rate, so cash flows are discounted at
+  the overnight (OIS: SOFR, €STR, TONA…) rate — the **discount curve**.
+
+Before 2008 these were treated as one curve: banks funded at IBOR, so IBOR
+was both the fixing and the discount rate. The crisis blew the IBOR–OIS
+spread out from a couple of basis points to over 300, and the market moved
+to **dual-curve** (multi-curve) pricing. The projection curve is now
+typically *above* the discount curve by a tenor basis that reflects bank
+credit and liquidity premia in the term benchmark.
+
+The two curves cannot be built independently, because an IRS quote depends
+on *both*: its floating coupons come from the projection curve and are
+discounted on the OIS curve. This library therefore fits them **jointly** —
+one optimisation over the stacked parameter vector — so the IRS repricing
+condition is satisfied exactly with the correct discounting, rather than
+bootstrapping the projection curve against a discount curve that was
+built earlier and assumed fixed.
+
+Where a market has migrated fully to OIS (USD SOFR, GBP SONIA, JPY TONA for
+most swaps), projection and discount curves coincide and the fitter falls
+back to a single curve automatically.
+
+### Why smooth forwards matter
+
+The **instantaneous forward rate** `f(t)` is the market's implied overnight
+rate for a single future day. It is the derivative of the (log) discount
+curve, so it magnifies every kink in it. Common interpolation choices
+(linear on zero rates, log-linear on discount factors) reprice the
+benchmarks perfectly but produce a *sawtooth* forward curve: flat steps with
+jumps at each knot, or spikes where the zero curve bends.
+
+That matters for derivatives in three ways:
+
+1. **Forward-starting trades are priced off the forwards, not the par
+   rates.** A 2y2y swap, a forward rate agreement, a caplet or a swaption
+   strike all depend on `P(t₁)/P(t₂)` for dates *between* benchmark
+   maturities. A sawtooth forward curve gives economically absurd answers —
+   e.g. the 4y6m–5y forward 50bp above the 4y–4y6m forward purely because of
+   where the knots sit — and traders will arbitrage anyone who quotes off it.
+2. **Risk is cleaner.** With a smooth curve, a 1bp bump to one benchmark
+   moves nearby forwards in a localised, well-behaved way. With a jagged
+   curve, bumping the 5y quote can throw wild, oscillating deltas onto the 4y
+   and 7y buckets, and P&L explain becomes noise.
+3. **Options need the forward's distribution.** Cap/floor and swaption
+   models are calibrated to forward rates; a discontinuous forward curve
+   feeds them discontinuous inputs and produces implausible implied
+   volatility surfaces.
+
+The quadratic smooth-forward approach here makes `f(t)` piecewise quadratic
+with continuous level *and* slope, then picks the curve with minimum total
+curvature (`∫ f''²`) among those that reprice the market. You get a forward
+curve that looks like something a central bank path could actually produce,
+while still hitting every benchmark to a tiny fraction of a basis point.
+
+### Why bother with an exact Hessian
+
+Fitting is an optimisation: find the parameters that minimise the repricing
+error plus a smoothness penalty. Most curve builders use a bootstrap or a
+first-order (Jacobian-only) solver. Because the forward curve here is linear
+in its parameters, every instrument price is a sum of exponentials, and the
+*second* derivatives come almost for free. That buys:
+
+* **Fast, stable convergence** — true Newton steps, no line-search thrash
+  near the solution, no Gauss–Newton approximation.
+* **Analytic risk** — the sensitivities of every curve parameter to every
+  market quote fall out of `H⁻¹` via the implicit function theorem, so
+  bucketed deltas of any trade are available without bumping and refitting.
+  The JPY example shows a 2y2y swap's risk resolving to −1.05 × 2y and
+  +2.05 × 4y, as theory says it should.
 
 ## Model
 
@@ -112,4 +203,5 @@ Hessian at the solution.
 - `src/fitter.rs` — objective, exact Hessian, damped Newton, `DualCurve`, quote sensitivities
 - `src/linalg.rs` — small dense matrix type with Cholesky
 - `examples/dual_curve.rs` — full OIS + 3M market fit with printed forwards
+- `examples/jpy_2y2y.rs` — JPY 2y2y forward swap from TONA OIS benchmarks, with Hessian-based risk
 - `tests/dual_curve.rs` — repricing, smoothness, single-curve mode, Hessian risk vs. refit
