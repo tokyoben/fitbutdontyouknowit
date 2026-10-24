@@ -1,0 +1,11 @@
+[package]
+name = "quadsmooth"
+version = "0.1.0"
+edition = "2021"
+description = "Quadratic smooth-forward interest rate curve fitter (dual curve, analytic Hessian Newton solver)"
+license = "MIT"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3
