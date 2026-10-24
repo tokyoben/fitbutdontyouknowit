@@ -3,9 +3,9 @@
 //!
 //! Run with `cargo run --example dual_curve`.
 
-use quadsmooth::{CurveId, DualCurveFitter, FitConfig, Instrument};
+use smoothrates::{CurveId, DualCurveFitter, FitConfig, Instrument};
 
-fn main() -> Result<(), quadsmooth::Error> {
+fn main() -> Result<(), smoothrates::Error> {
     let fitter = DualCurveFitter::new()
         .with_config(FitConfig {
             lambda_curvature: 1e-8,

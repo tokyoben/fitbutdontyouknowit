@@ -1,8 +1,8 @@
 [package]
-name = "quadsmooth"
+name = "smoothrates"
 version = "0.1.0"
 edition = "2021"
-description = "Quadratic smooth-forward interest rate curve fitter (dual curve, analytic Hessian Newton solver)"
+description = "Smooth-forward dual-curve interest rate fitter and shifted-SABR swaption cube, solved with exact-Hessian Newton"
 license = "MIT"
 
 [dependencies]

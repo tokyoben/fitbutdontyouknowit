@@ -1,4 +1,4 @@
-use quadsmooth::{CurveId, DualCurveFitter, FitConfig, Instrument};
+use smoothrates::{CurveId, DualCurveFitter, FitConfig, Instrument};
 
 fn market() -> DualCurveFitter {
     DualCurveFitter::new()
@@ -221,6 +221,6 @@ fn errors_are_reported() {
         .fit();
     assert_eq!(
         res.unwrap_err(),
-        quadsmooth::Error::NoInstruments(CurveId::Discount)
+        smoothrates::Error::NoInstruments(CurveId::Discount)
     );
 }
