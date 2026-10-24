@@ -58,15 +58,24 @@
 // `!(x > 0.0)` is used deliberately as a NaN-safe guard throughout.
 #![allow(clippy::neg_cmp_op_on_partial_ord)]
 
+pub mod cube;
 pub mod curve;
+pub mod dual;
 pub mod fitter;
 pub mod instruments;
 pub mod linalg;
+pub mod newton;
+pub mod sabr;
 
+pub use cube::{
+    ArbitrageReport, CubeConfig, CubeFit, CubeReport, SabrCube, Strike, SwaptionGrid, VolQuote,
+};
 pub use curve::{CurveId, DualBasis, QuadForwardBasis, QuadSmoothCurve};
 pub use fitter::{DualCurve, DualCurveFitter, FitConfig, FitReport, FitResult};
 pub use instruments::{ExpTerm, Instrument, Schedule};
 pub use linalg::Matrix;
+pub use newton::{NewtonConfig, TwiceDifferentiable};
+pub use sabr::{bachelier, norm_cdf, OptionType, SabrParams};
 
 /// Errors produced by curve construction, instrument definition or fitting.
 #[derive(Clone, Debug, PartialEq)]

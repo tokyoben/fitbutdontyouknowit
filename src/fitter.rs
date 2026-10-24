@@ -22,6 +22,7 @@
 use crate::curve::{CurveId, DualBasis, QuadForwardBasis, QuadSmoothCurve};
 use crate::instruments::{ExpTerm, Instrument};
 use crate::linalg::{axpy, dot, norm_inf, Matrix};
+use crate::newton::{self, NewtonConfig, TwiceDifferentiable};
 use crate::Error;
 
 /// Solver and regularisation settings.
@@ -193,15 +194,21 @@ impl DualCurveFitter {
         theta[basis.offset(CurveId::Discount)] = disc_init;
         theta[basis.offset(CurveId::Projection)] = proj_init;
 
-        let (theta, mut eval, iterations, converged) = newton(&objective, theta, n_active, cfg)?;
+        let newton_cfg = NewtonConfig {
+            max_iterations: cfg.max_iterations,
+            gradient_tol: cfg.gradient_tol,
+            step_tol: cfg.step_tol,
+        };
+        let minimum = newton::minimize(&objective, theta, n_active, &newton_cfg)?;
+        let (iterations, converged) = (minimum.iterations, minimum.converged);
 
-        let mut theta = theta;
+        let mut theta = minimum.theta;
         if single_curve {
             let n_d = basis.basis(CurveId::Discount).dim();
             let (d, p) = theta.split_at_mut(n_d);
             p.copy_from_slice(d);
-            eval = objective.evaluate(&theta);
         }
+        let eval = objective.evaluate(&theta);
 
         let curves = DualCurve { basis, theta };
         let report = FitReport {
@@ -326,107 +333,15 @@ fn reduce(m: &Matrix, n: usize) -> Matrix {
     r
 }
 
-/// Damped Newton iteration over the first `n_active` parameters.
-/// Returns `(θ, evaluation at θ, iterations, converged)`.
-fn newton(
-    objective: &Objective,
-    mut theta: Vec<f64>,
-    n_active: usize,
-    cfg: &FitConfig,
-) -> Result<(Vec<f64>, Evaluation, usize, bool), Error> {
-    let mut eval = objective.evaluate(&theta);
-    if !eval.value.is_finite() {
-        return Err(Error::SolverFailed(
-            "objective is not finite at the starting point".into(),
-        ));
-    }
-    let mut mu = 0.0_f64; // Levenberg–Marquardt style damping, normally zero.
-    let mut iterations = 0;
-    let mut converged = false;
-
-    for _ in 0..cfg.max_iterations {
-        let g = &eval.gradient[..n_active];
-        if norm_inf(g) < cfg.gradient_tol {
-            converged = true;
-            break;
-        }
-        iterations += 1;
-
-        let h = reduce(&eval.hessian, n_active);
-        let max_diag = (0..n_active).fold(0.0_f64, |m, i| m.max(h.get(i, i).abs()));
-        let neg_g: Vec<f64> = g.iter().map(|x| -x).collect();
-
-        // Solve (H + μI) δ = −∇F, increasing μ until H + μI is positive
-        // definite and δ is a descent direction.
-        let delta = loop {
-            let mut hm = h.clone();
-            if mu > 0.0 {
-                hm.add_diagonal(mu);
-            }
-            match hm.cholesky_solve(&neg_g) {
-                Some(d) if dot(&d, g) < 0.0 && d.iter().all(|x| x.is_finite()) => break d,
-                _ => {
-                    mu = if mu == 0.0 {
-                        1e-12 * (1.0 + max_diag)
-                    } else {
-                        mu * 10.0
-                    };
-                    if mu > 1e30 * (1.0 + max_diag) {
-                        return Err(Error::SolverFailed(
-                            "could not find a positive-definite damped Hessian".into(),
-                        ));
-                    }
-                }
-            }
-        };
-        let slope = dot(&delta, g);
-
-        // Backtracking (Armijo) line search.
-        let mut alpha = 1.0;
-        let mut accepted = None;
-        loop {
-            let mut trial = theta.clone();
-            axpy(alpha, &delta, &mut trial[..n_active]);
-            let f_trial = objective.value(&trial);
-            if f_trial.is_finite() && f_trial <= eval.value + 1e-4 * alpha * slope {
-                accepted = Some(trial);
-                break;
-            }
-            alpha *= 0.5;
-            if alpha < 1e-12 {
-                break;
-            }
-        }
-
-        match accepted {
-            Some(trial) => {
-                let step = alpha * norm_inf(&delta);
-                theta = trial;
-                eval = objective.evaluate(&theta);
-                mu *= 0.1;
-                if mu < 1e-300 {
-                    mu = 0.0;
-                }
-                if step < cfg.step_tol {
-                    converged = true;
-                    break;
-                }
-            }
-            None => {
-                // No decrease along the Newton direction: damp harder and retry.
-                mu = if mu == 0.0 {
-                    1e-6 * (1.0 + max_diag)
-                } else {
-                    mu * 100.0
-                };
-                if mu > 1e30 * (1.0 + max_diag) {
-                    break;
-                }
-            }
-        }
+impl TwiceDifferentiable for Objective {
+    fn value(&self, theta: &[f64]) -> f64 {
+        Objective::value(self, theta)
     }
 
-    Ok((theta, eval, iterations, converged))
+    fn value_gradient_hessian(&self, theta: &[f64]) -> (f64, Vec<f64>, Matrix) {
+        let e = self.evaluate(theta);
+        (e.value, e.gradient, e.hessian)
+    }
 }
 
 /// A jointly fitted discount and projection curve.

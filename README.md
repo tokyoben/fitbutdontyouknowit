@@ -7,8 +7,9 @@ dependencies.
 
 ```
 cargo test
-cargo run --example dual_curve   # synthetic OIS + 3M market
-cargo run --example jpy_2y2y     # JPY 2y2y from TONA OIS benchmarks
+cargo run --example dual_curve     # synthetic OIS + 3M market
+cargo run --example jpy_2y2y       # JPY 2y2y from TONA OIS benchmarks
+cargo run --example swaption_cube  # SABR cube on the TONA curve, 2y2y swaptions
 ```
 
 ## Background (the non-quant version)
@@ -202,6 +203,78 @@ let dtheta_dq = fit.quote_sensitivities(fitter.instruments(), &weights)?;
 `fit.report` also exposes the residuals, the Jacobian `∇r_j` and the full
 Hessian at the solution.
 
+## Swaption volatility cube
+
+The same machinery — exact Hessian, penalised global fit, shared Newton
+solver — is applied to a **shifted-SABR swaption cube**: one smile per
+(expiry, tenor) node, `β` and shift fixed as market conventions, forwards
+sourced from the fitted curve.
+
+### Smile model
+
+Per node the normal (Bachelier) volatility is the Hagan et al. (2002)
+expansion with Obloj's refinement: the integral `∫_K^F dx/x^β` that drives
+`ζ` and the prefactor is kept exact rather than approximated by
+`(FK)^{(1−β)/2} ln(F/K)`, which improves the wings and reduces exactly to the
+standard normal-SABR formula at `β = 0`. Rates are shifted (`F + s`, `K + s`)
+so strikes below zero are admissible, as JPY/EUR/CHF conventions require.
+
+### Fitting across the cube
+
+Parameters are fitted in unconstrained coordinates
+`α = e^a, ρ = tanh r, ν = e^n` and the objective is
+
+```
+F = ½ Σ_quotes w (σ_model − σ_mkt)² [bp²]
+  + ½ Σ_{p ∈ {a,r,n}} λ_p Σ_{adjacent nodes} (p_i − p_j)²
+  + ½ ridge · |θ − θ₀|²
+```
+
+The smile formula is evaluated on a three-variable **hyper-dual number**
+(`src/dual.rs`: value + gradient + Hessian propagated through every
+arithmetic op), so each quote contributes its exact 3×3 Hessian block with no
+hand-derived derivatives and no finite differences. A 24-node, 154-quote cube
+converges in ~13 Newton iterations.
+
+The cross-node penalty is what makes this a cube fitter rather than 24
+independent smile fits: nodes missing from the broker run are filled in from
+their neighbours, nodes with only an ATM quote inherit skew (`ρ, ν`) from
+neighbours, and noisy quotes are smoothed rather than chased. Set the `λ`s
+to zero to recover independent per-node calibration (the tests check that
+this reproduces a known cube's parameters exactly).
+
+### What you get back
+
+* `SabrCube::node(i, j)` — fitted `SabrParams` at each grid node
+* `params_at(expiry, tenor)` / `vol_at(...)` — bilinear interpolation of the
+  transformed parameters in `(ln expiry, ln tenor)` for off-grid swaptions
+* `price(...)` — Bachelier swaption value given forward, strike and annuity
+* `arbitrage_report(range, step)` — butterfly check: implied density
+  `∂²C/∂K²` scanned across strikes at every node
+* `CubeReport` — residuals in bp, RMSE, iterations, and the exact Hessian over
+  all node parameters (the basis for parameter-to-quote sensitivities, exactly
+  as in the curve fitter)
+
+```rust
+use quadsmooth::{CubeConfig, CurveId, SabrCube, Strike, SwaptionGrid, VolQuote, OptionType};
+
+// forwards from the fitted TONA curve: annual/annual forward-starting swaps
+let grid = SwaptionGrid::from_curve(vec![1.0, 2.0, 5.0, 10.0], vec![2.0, 5.0, 10.0],
+                                    &fit.curves, 1, 1, CurveId::Discount)?;
+let quotes = vec![
+    VolQuote::atm(2.0, 2.0, 0.0070),             // 70bp normal vol
+    VolQuote::offset_bp(2.0, 2.0, -50.0, 0.0071),
+    VolQuote::offset_bp(2.0, 2.0,  50.0, 0.0072),
+    // …
+];
+let cfg = CubeConfig { beta: 0.5, shift: 0.02, ..CubeConfig::default() };
+let cube = SabrCube::fit(grid, &quotes, &cfg)?.cube;
+
+let vol  = cube.vol_at(2.0, 2.0, fwd, fwd + 0.0050)?;                 // +50bp 2y2y
+let pv   = cube.price(OptionType::Call, 2.0, 2.0, fwd, fwd, annuity)?; // ATM payer
+assert!(cube.arbitrage_report(0.03, 0.0005).is_free());
+```
+
 ## Layout
 
 - `src/curve.rs` — `QuadForwardBasis` (linear basis of the C¹ quadratic
@@ -209,6 +282,11 @@ Hessian at the solution.
 - `src/instruments.rs` — `Instrument`, `Schedule`, expansion into exponential terms
 - `src/fitter.rs` — objective, exact Hessian, damped Newton, `DualCurve`, quote sensitivities
 - `src/linalg.rs` — small dense matrix type with Cholesky
+- `src/newton.rs` — damped Newton minimiser shared by the curve and cube fitters
+- `src/dual.rs` — second-order forward-mode AD (`Dual2`): value, gradient, Hessian in 3 variables
+- `src/sabr.rs` — shifted SABR normal-vol smile over `Dual2`, Bachelier pricing, normal CDF
+- `src/cube.rs` — `SwaptionGrid`, `VolQuote`, penalised cube fit, interpolation, arbitrage check
 - `examples/dual_curve.rs` — full OIS + 3M market fit with printed forwards
 - `examples/jpy_2y2y.rs` — JPY 2y2y forward swap from TONA OIS benchmarks, with Hessian-based risk
+- `examples/swaption_cube.rs` — SABR cube on the TONA curve with missing nodes and noisy quotes, 2y2y swaption prices
 - `tests/dual_curve.rs` — repricing, smoothness, single-curve mode, Hessian risk vs. refit
