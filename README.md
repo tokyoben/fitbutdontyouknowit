@@ -49,9 +49,16 @@ condition is satisfied exactly with the correct discounting, rather than
 bootstrapping the projection curve against a discount curve that was
 built earlier and assumed fixed.
 
-Where a market has migrated fully to OIS (USD SOFR, GBP SONIA, JPY TONA for
-most swaps), projection and discount curves coincide and the fitter falls
-back to a single curve automatically.
+The two curves only differ because the floating leg and the collateral
+referenced *different* indices: the coupon fixed off an unsecured term rate
+(LIBOR, TIBOR) while the collateral earned the overnight rate. Where a market
+has migrated fully to OIS (USD SOFR, GBP SONIA, JPY TONA for most new swaps)
+the floating leg pays compounded overnight *and* the collateral earns that
+same overnight rate, so there is no basis instrument left to separate the two
+curves — they coincide, and the fitter falls back to a single curve
+automatically. Markets where a term benchmark survived (EUR with EURIBOR,
+legacy JPY TIBOR books, anything on Term SOFR / TORF) remain genuinely
+multi-curve.
 
 ### Why smooth forwards matter
 
