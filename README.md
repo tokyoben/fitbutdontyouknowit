@@ -1,9 +1,18 @@
 # quadsmooth
 
-A quadratic **smooth-forward** interest rate curve fitter in Rust for a
-dual-curve setup (separate projection and discount curves), solved jointly
-with a damped Newton method and the **exact analytic Hessian**. No
-dependencies.
+Rates curve and volatility fitting in Rust, with no dependencies:
+
+* a quadratic **smooth-forward** interest rate curve fitter for a dual-curve
+  setup (separate projection and discount curves), solved jointly;
+* a **shifted-SABR swaption volatility cube** fitter on top of it, with
+  forwards taken from the fitted curve, a smoothness penalty across
+  (expiry × tenor) nodes and a butterfly-arbitrage check.
+
+Both use a damped Newton method with the **exact analytic Hessian** — from the
+linear-in-parameters forward curve in one case, and from second-order
+forward-mode automatic differentiation of the SABR formula in the other — so
+convergence takes a handful of iterations and market-quote sensitivities fall
+out of the Hessian without bump-and-refit.
 
 ```
 cargo test
@@ -93,6 +102,26 @@ curvature (`∫ f''²`) among those that reprice the market. You get a forward
 curve that looks like something a central bank path could actually produce,
 while still hitting every benchmark to a tiny fraction of a basis point.
 
+### From curves to volatility
+
+A curve tells you the *expected* path of rates. Options on rates — swaptions,
+caps, floors — need the *uncertainty* around that path, which the market
+expresses as an implied volatility for each option. Swaption quotes come on a
+grid of option expiry × underlying swap tenor, each with a few strikes, and
+the resulting **volatility cube** is as central to a rates desk as the curve
+itself: it prices every option book, drives hedging, and is the calibration
+target for the term-structure models used on exotics.
+
+The difficulty is the same as for curves, only worse: a few hundred noisy,
+sparse quotes have to be turned into a smooth, arbitrage-free surface that
+gives a sensible volatility for *any* expiry, tenor and strike — including
+nodes the brokers didn't quote that day. The market's standard answer is the
+SABR model: each quoted smile is summarised by three parameters, and those
+parameters are then smoothed across the grid. The cube fitter here does
+exactly that in one global optimisation, with the forward swap rate at every
+node taken from the smooth-forward curve so that curve and cube are mutually
+consistent.
+
 ### Why bother with an exact Hessian
 
 Fitting is an optimisation: find the parameters that minimise the repricing
@@ -108,6 +137,10 @@ in its parameters, every instrument price is a sum of exponentials, and the
   bucketed deltas of any trade are available without bumping and refitting.
   The JPY example shows a 2y2y swap's risk resolving to −1.05 × 2y and
   +2.05 × 4y, as theory says it should.
+* **The same solver for the cube** — the SABR objective supplies its exact
+  Hessian through automatic differentiation, so a 24-node, 72-parameter cube
+  converges in ~13 iterations rather than hundreds of Levenberg–Marquardt
+  steps.
 
 ## Model
 
