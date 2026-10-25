@@ -19,6 +19,7 @@ cargo test
 cargo run --example dual_curve     # synthetic OIS + 3M market
 cargo run --example jpy_2y2y       # JPY 2y2y from TONA OIS benchmarks
 cargo run --example swaption_cube  # SABR cube on the TONA curve, 2y2y swaptions
+cargo run --example forward_curves # writes docs/forward_curves.svg (the chart below)
 ```
 
 ## Background (the non-quant version)
@@ -78,6 +79,17 @@ curve, so it magnifies every kink in it. Common interpolation choices
 (linear on zero rates, log-linear on discount factors) reprice the
 benchmarks perfectly but produce a *sawtooth* forward curve: flat steps with
 jumps at each knot, or spikes where the zero curve bends.
+
+![Instantaneous forwards of the TONA curve under quad-smooth fitting and two bootstrap interpolations, and the quad-smooth curve's forwards by tenor](docs/forward_curves.svg)
+
+The chart above fits one set of TONA OIS quotes three ways. All three reprice
+every benchmark exactly. The flat-forward bootstrap gives a staircase whose
+steps sit on the benchmark maturities; linear interpolation on zero rates
+gives a sawtooth, with a 95bp drop at the 20y knot. The quad-smooth
+forward never moves more than 2.5bp between samples 0.025y apart. The lower
+panel shows the quad-smooth curve's 3M and 1Y forwards and zero curve, all
+of which inherit the smoothness. Plotted values are in
+`docs/forward_curves.csv`.
 
 That matters for derivatives in three ways:
 
@@ -322,4 +334,5 @@ assert!(cube.arbitrage_report(0.03, 0.0005).is_free());
 - `examples/dual_curve.rs` — full OIS + 3M market fit with printed forwards
 - `examples/jpy_2y2y.rs` — JPY 2y2y forward swap from TONA OIS benchmarks, with Hessian-based risk
 - `examples/swaption_cube.rs` — SABR cube on the TONA curve with missing nodes and noisy quotes, 2y2y swaption prices
+- `examples/forward_curves.rs` — quad-smooth vs flat-forward and linear-zero bootstraps on TONA OIS; writes `docs/forward_curves.svg` and `.csv`
 - `tests/dual_curve.rs` — repricing, smoothness, single-curve mode, Hessian risk vs. refit
