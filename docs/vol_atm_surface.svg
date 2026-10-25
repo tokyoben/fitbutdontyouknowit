@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="960" height="580" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-labelledby="t d">
+<title id="t">ATM swaption volatility surface</title><desc id="d">At-the-money normal volatility in basis points for each expiry and swap tenor of the fitted SABR cube. Two nodes had no market quotes and were filled by the smoothness penalty. Values in docs/vol_cube.csv.</desc>
+<rect width="960" height="580" fill="#fcfcfb"/>
+<text x="64" y="30" font-size="16" font-weight="600" fill="#0b0b0b">ATM normal volatility (bp), expiry × tenor</text>
+<text x="64.0" y="51.0" font-size="13" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Fitted SABR cube on the TONA curve. Darker is higher volatility. Cells marked “no quotes” were filled by the smoothness penalty.</text>
+<text x="510.0" y="102.0" font-size="12.5" fill="#52514e" text-anchor="middle" style="font-variant-numeric: tabular-nums">Swap tenor</text>
+<text x="193.5" y="124.0" font-size="12.5" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">1y</text>
+<text x="404.5" y="124.0" font-size="12.5" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">2y</text>
+<text x="615.5" y="124.0" font-size="12.5" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">5y</text>
+<text x="826.5" y="124.0" font-size="12.5" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">10y</text>
+<text x="24" y="310" font-size="12.5" fill="#52514e" text-anchor="middle" transform="rotate(-90 24 310)">Option expiry</text>
+<text x="78.0" y="169.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">1y</text>
+<rect x="89.0" y="137.0" width="209.0" height="56.0" rx="3" fill="#cde2fb"/>
+<text x="193.5" y="170.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">62.8</text>
+<rect x="300.0" y="137.0" width="209.0" height="56.0" rx="3" fill="#b3d1f6"/>
+<text x="404.5" y="170.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">65.6</text>
+<rect x="511.0" y="137.0" width="209.0" height="56.0" rx="3" fill="#8dbaf0"/>
+<text x="615.5" y="170.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">69.3</text>
+<rect x="722.0" y="137.0" width="209.0" height="56.0" rx="3" fill="#70a9ec"/>
+<text x="826.5" y="170.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">72.1</text>
+<text x="78.0" y="227.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">2y</text>
+<rect x="89.0" y="195.0" width="209.0" height="56.0" rx="3" fill="#9fc6f4"/>
+<text x="193.5" y="228.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">67.5</text>
+<rect x="300.0" y="195.0" width="209.0" height="56.0" rx="3" fill="#84b5ef"/>
+<text x="404.5" y="228.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">70.1</text>
+<rect x="511.0" y="195.0" width="209.0" height="56.0" rx="3" fill="#5d9de9"/>
+<text x="615.5" y="228.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">73.9</text>
+<rect x="722.0" y="195.0" width="209.0" height="56.0" rx="3" fill="#3f8be5"/>
+<text x="826.5" y="228.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">76.7</text>
+<text x="78.0" y="285.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">3y</text>
+<rect x="89.0" y="253.0" width="209.0" height="56.0" rx="3" fill="#7bafee"/>
+<text x="193.5" y="280.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">71.0</text>
+<text x="193.5" y="296.0" font-size="11.5" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">no quotes</text>
+<rect x="300.0" y="253.0" width="209.0" height="56.0" rx="3" fill="#64a1ea"/>
+<text x="404.5" y="286.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">73.3</text>
+<rect x="511.0" y="253.0" width="209.0" height="56.0" rx="3" fill="#3886e4"/>
+<text x="615.5" y="286.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">77.2</text>
+<rect x="722.0" y="253.0" width="209.0" height="56.0" rx="3" fill="#2975d1"/>
+<text x="826.5" y="286.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">80.1</text>
+<text x="78.0" y="343.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">5y</text>
+<rect x="89.0" y="311.0" width="209.0" height="56.0" rx="3" fill="#5095e7"/>
+<text x="193.5" y="344.0" font-size="14" font-weight="600" fill="#0b0b0b" text-anchor="middle" style="font-variant-numeric: tabular-nums">75.2</text>
+<rect x="300.0" y="311.0" width="209.0" height="56.0" rx="3" fill="#3381df"/>
+<text x="404.5" y="344.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">78.1</text>
+<rect x="511.0" y="311.0" width="209.0" height="56.0" rx="3" fill="#256bc1"/>
+<text x="615.5" y="344.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">81.7</text>
+<rect x="722.0" y="311.0" width="209.0" height="56.0" rx="3" fill="#1b5aa8"/>
+<text x="826.5" y="344.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">84.7</text>
+<text x="78.0" y="401.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">7y</text>
+<rect x="89.0" y="369.0" width="209.0" height="56.0" rx="3" fill="#317fdd"/>
+<text x="193.5" y="402.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">78.5</text>
+<rect x="300.0" y="369.0" width="209.0" height="56.0" rx="3" fill="#266ec5"/>
+<text x="404.5" y="396.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">81.3</text>
+<text x="404.5" y="412.0" font-size="11.5" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">no quotes</text>
+<rect x="511.0" y="369.0" width="209.0" height="56.0" rx="3" fill="#1b57a3"/>
+<text x="615.5" y="402.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">85.2</text>
+<rect x="722.0" y="369.0" width="209.0" height="56.0" rx="3" fill="#14498b"/>
+<text x="826.5" y="402.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">87.9</text>
+<text x="78.0" y="459.0" font-size="12.5" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">10y</text>
+<rect x="89.0" y="427.0" width="209.0" height="56.0" rx="3" fill="#2469bd"/>
+<text x="193.5" y="460.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">82.2</text>
+<rect x="300.0" y="427.0" width="209.0" height="56.0" rx="3" fill="#1b59a6"/>
+<text x="404.5" y="460.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">84.9</text>
+<rect x="511.0" y="427.0" width="209.0" height="56.0" rx="3" fill="#114484"/>
+<text x="615.5" y="460.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">88.7</text>
+<rect x="722.0" y="427.0" width="209.0" height="56.0" rx="3" fill="#0d366b"/>
+<text x="826.5" y="460.0" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle" style="font-variant-numeric: tabular-nums">91.6</text>
+<defs><linearGradient id="ramp">
+<stop offset="0.000" stop-color="#cde2fb"/>
+<stop offset="0.083" stop-color="#b7d3f6"/>
+<stop offset="0.167" stop-color="#9ec5f4"/>
+<stop offset="0.250" stop-color="#86b6ef"/>
+<stop offset="0.333" stop-color="#6da7ec"/>
+<stop offset="0.417" stop-color="#5598e7"/>
+<stop offset="0.500" stop-color="#3987e5"/>
+<stop offset="0.583" stop-color="#2a78d6"/>
+<stop offset="0.667" stop-color="#256abf"/>
+<stop offset="0.750" stop-color="#1c5cab"/>
+<stop offset="0.833" stop-color="#184f95"/>
+<stop offset="0.917" stop-color="#104281"/>
+<stop offset="1.000" stop-color="#0d366b"/>
+</linearGradient></defs>
+<rect x="88" y="518" width="240" height="10" rx="2" fill="url(#ramp)"/>
+<text x="88.0" y="546.0" font-size="12" fill="#898781" text-anchor="start" style="font-variant-numeric: tabular-nums">62.8bp</text>
+<text x="328.0" y="546.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">91.6bp</text>
+</svg>

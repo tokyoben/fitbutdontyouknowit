@@ -18,7 +18,7 @@ out of the Hessian without bump-and-refit.
 cargo test
 cargo run --example dual_curve     # synthetic OIS + 3M market
 cargo run --example jpy_2y2y       # JPY 2y2y from TONA OIS benchmarks
-cargo run --example swaption_cube  # SABR cube on the TONA curve, 2y2y swaptions
+cargo run --example swaption_cube  # SABR cube on the TONA curve, 2y2y swaptions; writes the vol charts below
 cargo run --example forward_curves # writes docs/forward_curves.svg (the chart below)
 ```
 
@@ -288,6 +288,35 @@ neighbours, and noisy quotes are smoothed rather than chased. Set the `λ`s
 to zero to recover independent per-node calibration (the tests check that
 this reproduces a known cube's parameters exactly).
 
+### The fitted cube, charted
+
+These charts come from `cargo run --example swaption_cube`. That example fits
+a 6 × 4 expiry-by-tenor cube to 154 quotes on the TONA curve. The quotes are
+synthetic: generated from a known SABR cube, with ±0.3bp of noise added and
+two nodes removed. Because the true cube is known, the charts show how close
+the fit gets as well as what it looks like. The fitted values are in
+`docs/vol_cube.csv`.
+
+**Smiles.** The top panel shows the fitted smiles for four expiries into 5y
+swaps, with the quotes they were fitted to. The bottom panel shows the two
+nodes that had no quotes at all. Their smiles come only from the smoothness
+penalty, and they land within about half a basis point of what the market
+would have quoted.
+
+![Fitted SABR smiles for 1y, 2y, 5y and 10y expiries into 5y swaps with market quotes, and the two unquoted nodes against their would-be quotes](docs/vol_smiles.svg)
+
+**ATM surface.** ATM normal volatility rises with both expiry and tenor. The
+two gap-filled nodes sit in line with their neighbours.
+
+![Heatmap of ATM normal volatility by option expiry and swap tenor](docs/vol_atm_surface.svg)
+
+**SABR parameters.** The grey line is the generating cube. ν (smile
+curvature) is recovered closely at every tenor. ρ (skew) is the parameter the
+quotes pin down least well, so most of the quote noise ends up there: the
+fitted lines scatter by about ±0.02 around the true value.
+
+![Fitted SABR rho and nu by option expiry for each swap tenor, with the generating values](docs/sabr_params.svg)
+
 ### What you get back
 
 * `SabrCube::node(i, j)` — fitted `SabrParams` at each grid node
@@ -333,6 +362,7 @@ assert!(cube.arbitrage_report(0.03, 0.0005).is_free());
 - `src/cube.rs` — `SwaptionGrid`, `VolQuote`, penalised cube fit, interpolation, arbitrage check
 - `examples/dual_curve.rs` — full OIS + 3M market fit with printed forwards
 - `examples/jpy_2y2y.rs` — JPY 2y2y forward swap from TONA OIS benchmarks, with Hessian-based risk
-- `examples/swaption_cube.rs` — SABR cube on the TONA curve with missing nodes and noisy quotes, 2y2y swaption prices
+- `examples/swaption_cube.rs` — SABR cube on the TONA curve with missing nodes and noisy quotes, 2y2y swaption prices; writes `docs/vol_smiles.svg`, `docs/vol_atm_surface.svg`, `docs/sabr_params.svg` and `docs/vol_cube.csv`
 - `examples/forward_curves.rs` — quad-smooth vs flat-forward and linear-zero bootstraps on TONA OIS; writes `docs/forward_curves.svg` and `.csv`
+- `examples/common/svg.rs` — small SVG charting helpers shared by the plotting examples
 - `tests/dual_curve.rs` — repricing, smoothness, single-curve mode, Hessian risk vs. refit

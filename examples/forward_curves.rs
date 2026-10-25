@@ -20,6 +20,10 @@ use std::fs;
 
 use quadsmooth::{CurveId, DualCurve, DualCurveFitter, FitConfig, Instrument};
 
+#[path = "common/svg.rs"]
+mod svg;
+use svg::{LinePanel, Series, SERIES};
+
 const AS_OF: &str = "21 Oct 2026";
 const TONA_FIXING: f64 = 0.01227;
 const TONA_OIS: &[(f64, f64)] = &[
@@ -155,165 +159,8 @@ fn bootstrap(interp: Interp, instruments: &[Instrument]) -> Bootstrapped {
     curve
 }
 
-// ---------------------------------------------------------------------------
-// SVG
-// ---------------------------------------------------------------------------
-
 const W: f64 = 960.0;
 const PANEL_H: f64 = 430.0;
-const ML: f64 = 64.0;
-const MR: f64 = 28.0;
-const MT: f64 = 104.0;
-const MB: f64 = 58.0;
-
-const SURFACE: &str = "#fcfcfb";
-const INK: &str = "#0b0b0b";
-const INK_2: &str = "#52514e";
-const MUTED: &str = "#898781";
-const GRID: &str = "#e1e0d9";
-const AXIS: &str = "#c3c2b7";
-const FONT: &str = "system-ui, -apple-system, 'Segoe UI', sans-serif";
-/// Categorical slots 1–4, in fixed order.
-const SERIES: [&str; 4] = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100"];
-
-struct Series<'a> {
-    name: &'a str,
-    color: &'a str,
-    points: Vec<(f64, f64)>,
-}
-
-fn esc(s: &str) -> String {
-    s.replace('&', "&amp;")
-        .replace('<', "&lt;")
-        .replace('>', "&gt;")
-}
-
-fn nice_bounds(lo: f64, hi: f64, step: f64) -> (f64, f64) {
-    ((lo / step).floor() * step, (hi / step).ceil() * step)
-}
-
-/// One panel at vertical offset `y0`. Values are in percent.
-#[allow(clippy::too_many_arguments)]
-fn panel(
-    svg: &mut String,
-    y0: f64,
-    title: &str,
-    subtitle: &str,
-    series: &[Series],
-    x_max: f64,
-    knot_marks: &[f64],
-) {
-    let (lo, hi) = series
-        .iter()
-        .flat_map(|s| s.points.iter().map(|p| p.1))
-        .fold((f64::INFINITY, f64::NEG_INFINITY), |(a, b), v| {
-            (a.min(v), b.max(v))
-        });
-    let y_step = 0.5;
-    let (y_lo, y_hi) = nice_bounds(lo, hi, y_step);
-    let (px0, px1) = (ML, W - MR);
-    let (py0, py1) = (y0 + PANEL_H - MB, y0 + MT);
-    let sx = |x: f64| px0 + (x / x_max) * (px1 - px0);
-    let sy = |y: f64| py0 - (y - y_lo) / (y_hi - y_lo) * (py0 - py1);
-
-    let _ = writeln!(
-        svg,
-        r#"<text x="{ML}" y="{}" font-size="16" font-weight="600" fill="{INK}">{}</text>"#,
-        y0 + 30.0,
-        esc(title)
-    );
-    let _ = writeln!(
-        svg,
-        r#"<text x="{ML}" y="{}" font-size="13" fill="{INK_2}">{}</text>"#,
-        y0 + 51.0,
-        esc(subtitle)
-    );
-
-    // Legend: one row under the subtitle, short line keys, text in ink.
-    let mut lx = ML;
-    for s in series {
-        let ly = y0 + 76.0;
-        let _ = writeln!(
-            svg,
-            r#"<line x1="{lx}" y1="{ly}" x2="{}" y2="{ly}" stroke="{}" stroke-width="2.5" stroke-linecap="round"/>"#,
-            lx + 18.0,
-            s.color
-        );
-        let _ = writeln!(
-            svg,
-            r#"<text x="{}" y="{}" font-size="12.5" fill="{INK_2}">{}</text>"#,
-            lx + 24.0,
-            ly + 4.0,
-            esc(s.name)
-        );
-        lx += 24.0 + 7.4 * s.name.chars().count() as f64 + 26.0;
-    }
-
-    // Gridlines and y ticks.
-    let mut y = y_lo;
-    while y <= y_hi + 1e-9 {
-        let py = sy(y);
-        let _ = writeln!(
-            svg,
-            r#"<line x1="{px0}" y1="{py:.1}" x2="{px1}" y2="{py:.1}" stroke="{}" stroke-width="1"/>"#,
-            if (y - y_lo).abs() < 1e-9 { AXIS } else { GRID }
-        );
-        let _ = writeln!(
-            svg,
-            r#"<text x="{}" y="{:.1}" font-size="12" fill="{MUTED}" text-anchor="end" style="font-variant-numeric: tabular-nums">{y:.1}%</text>"#,
-            px0 - 8.0,
-            py + 4.0
-        );
-        y += y_step;
-    }
-    // X ticks every 5 years.
-    let mut x = 0.0;
-    while x <= x_max + 1e-9 {
-        let _ = writeln!(
-            svg,
-            r#"<text x="{:.1}" y="{}" font-size="12" fill="{MUTED}" text-anchor="middle" style="font-variant-numeric: tabular-nums">{x:.0}y</text>"#,
-            sx(x),
-            py0 + 20.0
-        );
-        x += 5.0;
-    }
-    // Benchmark maturities as short ticks on the baseline.
-    if !knot_marks.is_empty() {
-        for &k in knot_marks.iter().filter(|&&k| k <= x_max) {
-            let _ = writeln!(
-                svg,
-                r#"<line x1="{0:.1}" y1="{1:.1}" x2="{0:.1}" y2="{2:.1}" stroke="{INK_2}" stroke-width="1.5"/>"#,
-                sx(k),
-                py0 - 6.0,
-                py0
-            );
-        }
-        let _ = writeln!(
-            svg,
-            r#"<text x="{px1}" y="{}" font-size="12" fill="{MUTED}" text-anchor="end">Ticks on the axis mark the OIS benchmark maturities</text>"#,
-            py0 + 42.0
-        );
-    }
-
-    // Series: 2px lines, round joins. Drawn in reverse so slot 1 sits on top.
-    for s in series.iter().rev() {
-        let mut d = String::new();
-        for (i, &(x, y)) in s.points.iter().enumerate() {
-            let _ = write!(
-                d,
-                "{}{:.2},{:.2}",
-                if i == 0 { "M" } else { " L" },
-                sx(x),
-                sy(y)
-            );
-        }
-        let _ = writeln!(
-            svg,
-            r#"<path d="{d}" fill="none" stroke="{}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>"#,
-            s.color
-        );
-    }
-}
 
 fn main() -> Result<(), quadsmooth::Error> {
     let mut instruments = vec![Instrument::deposit(
@@ -408,53 +255,68 @@ fn main() -> Result<(), quadsmooth::Error> {
     // SVG.
     let knots: Vec<f64> = TONA_OIS.iter().map(|p| p.0).collect();
     let height = 2.0 * PANEL_H + 24.0;
-    let mut svg = String::new();
-    let _ = writeln!(
-        svg,
-        r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {height}" width="{W}" height="{height}" font-family="{FONT}" role="img" aria-labelledby="t d">"#
+    let x_ticks: Vec<(f64, String)> = (0..=6)
+        .map(|i| (5.0 * i as f64, format!("{}y", 5 * i)))
+        .collect();
+    let pct_fmt = |y: f64| format!("{y:.1}%");
+    let mut out = String::new();
+    svg::open(
+        &mut out,
+        W,
+        height,
+        &format!("TONA OIS forward curves, {AS_OF}"),
+        "Instantaneous forward rates of the TONA curve under quad-smooth fitting, flat-forward bootstrap and linear-zero bootstrap, and the quad-smooth curve's instantaneous, 3-month and 1-year forwards and zero rates, 0 to 30 years. Values in docs/forward_curves.csv.",
     );
-    let _ = writeln!(
-        svg,
-        r#"<title id="t">TONA OIS forward curves, {AS_OF}</title><desc id="d">Instantaneous forward rates of the TONA curve under quad-smooth fitting, flat-forward bootstrap and linear-zero bootstrap, and the quad-smooth curve's instantaneous, 3-month and 1-year forwards and zero rates, 0 to 30 years. Values in docs/forward_curves.csv.</desc>"#
+    let top_title = format!("One set of TONA OIS quotes ({AS_OF}), three curves");
+    svg::line_panel(
+        &mut out,
+        &LinePanel {
+            x: 0.0,
+            y: 0.0,
+            w: W,
+            h: PANEL_H,
+            title: &top_title,
+            subtitle: "Instantaneous forward rate. All three reprice every benchmark exactly; only the quad-smooth fit keeps the forward continuous.",
+            series: &[
+                Series::line("Quad-smooth (this crate)", SERIES[0], inst_smooth.clone()),
+                Series::line("Bootstrap, flat forwards", SERIES[1], inst_flat.clone()),
+                Series::line("Bootstrap, linear zero rates", SERIES[2], inst_linz.clone()),
+            ],
+            extra_legend: &[],
+            x_range: (0.0, x_max),
+            x_ticks: &x_ticks,
+            y_step: 0.5,
+            y_fmt: &pct_fmt,
+            x_marks: &knots,
+            note: Some("Ticks on the axis mark the OIS benchmark maturities"),
+        },
     );
-    let _ = writeln!(
-        svg,
-        r#"<rect width="{W}" height="{height}" fill="{SURFACE}"/>"#
+    svg::rule(&mut out, svg::ML, W - svg::MR, PANEL_H + 12.0);
+    svg::line_panel(
+        &mut out,
+        &LinePanel {
+            x: 0.0,
+            y: PANEL_H + 24.0,
+            w: W,
+            h: PANEL_H,
+            title: "Quad-smooth curve: forward rates by tenor",
+            subtitle: "Instantaneous, 3-month and 1-year simple forwards starting at each date, with the zero curve for reference.",
+            series: &[
+                Series::line("Instantaneous forward", SERIES[0], inst_smooth.clone()),
+                Series::line("3M forward", SERIES[1], fwd_3m.clone()),
+                Series::line("1Y forward", SERIES[2], fwd_1y.clone()),
+                Series::line("Zero rate", SERIES[3], zero.clone()),
+            ],
+            extra_legend: &[],
+            x_range: (0.0, x_max),
+            x_ticks: &x_ticks,
+            y_step: 0.5,
+            y_fmt: &pct_fmt,
+            x_marks: &[],
+            note: None,
+        },
     );
-    panel(
-        &mut svg,
-        0.0,
-        &format!("One set of TONA OIS quotes ({AS_OF}), three curves"),
-        "Instantaneous forward rate. All three reprice every benchmark exactly; only the quad-smooth fit keeps the forward continuous.",
-        &[
-            Series { name: "Quad-smooth (this crate)", color: SERIES[0], points: inst_smooth.clone() },
-            Series { name: "Bootstrap, flat forwards", color: SERIES[1], points: inst_flat.clone() },
-            Series { name: "Bootstrap, linear zero rates", color: SERIES[2], points: inst_linz.clone() },
-        ],
-        x_max,
-        &knots,
-    );
-    let _ = writeln!(
-        svg,
-        r#"<line x1="{ML}" y1="{0}" x2="{1}" y2="{0}" stroke="{GRID}" stroke-width="1"/>"#,
-        PANEL_H + 12.0,
-        W - MR
-    );
-    panel(
-        &mut svg,
-        PANEL_H + 24.0,
-        "Quad-smooth curve: forward rates by tenor",
-        "Instantaneous, 3-month and 1-year simple forwards starting at each date, with the zero curve for reference.",
-        &[
-            Series { name: "Instantaneous forward", color: SERIES[0], points: inst_smooth.clone() },
-            Series { name: "3M forward", color: SERIES[1], points: fwd_3m.clone() },
-            Series { name: "1Y forward", color: SERIES[2], points: fwd_1y.clone() },
-            Series { name: "Zero rate", color: SERIES[3], points: zero.clone() },
-        ],
-        x_max,
-        &[],
-    );
-    svg.push_str("</svg>\n");
+    svg::close(&mut out);
 
     // CSV table view (every 0.25y).
     let mut csv = String::from(
@@ -477,7 +339,7 @@ fn main() -> Result<(), quadsmooth::Error> {
     }
 
     fs::create_dir_all("docs").expect("create docs/");
-    fs::write("docs/forward_curves.svg", svg).expect("write svg");
+    fs::write("docs/forward_curves.svg", out).expect("write svg");
     fs::write("docs/forward_curves.csv", csv).expect("write csv");
     println!("\nwrote docs/forward_curves.svg and docs/forward_curves.csv");
     Ok(())

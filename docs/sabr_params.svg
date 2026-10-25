@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 824" width="960" height="824" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" role="img" aria-labelledby="t d">
+<title id="t">Fitted SABR parameters by expiry and tenor</title><desc id="d">Correlation rho and vol-of-vol nu of the fitted SABR cube at each grid node, by option expiry, one line per swap tenor, with the generating cube's values as a grey reference line. Open markers are nodes with no market quotes. Values in docs/vol_cube.csv.</desc>
+<rect width="960" height="824" fill="#fcfcfb"/>
+<text x="64" y="30" font-size="16" font-weight="600" fill="#0b0b0b">Correlation ρ (rho) by option expiry</text>
+<text x="64.0" y="51.0" font-size="13" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Sets the skew: negative ρ means vol rises as strikes fall. The least well-pinned parameter, so the ±0.3bp quote noise shows up here.</text>
+<line x1="64" y1="76" x2="82" y2="76" stroke="#2a78d6" stroke-width="2.5" stroke-linecap="round"/>
+<text x="88.0" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">1y tenor</text>
+<line x1="171.6" y1="76" x2="189.6" y2="76" stroke="#eb6834" stroke-width="2.5" stroke-linecap="round"/>
+<text x="195.6" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">2y tenor</text>
+<line x1="279.2" y1="76" x2="297.2" y2="76" stroke="#1baf7a" stroke-width="2.5" stroke-linecap="round"/>
+<text x="303.2" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">5y tenor</text>
+<line x1="386.8" y1="76" x2="404.8" y2="76" stroke="#eda100" stroke-width="2.5" stroke-linecap="round"/>
+<text x="410.8" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">10y tenor</text>
+<line x1="501.6" y1="76" x2="519.6" y2="76" stroke="#898781" stroke-width="2.5" stroke-linecap="round"/>
+<text x="525.6" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Generating cube</text>
+<circle cx="664.60" cy="76.00" r="6" fill="#fcfcfb"/><circle cx="664.60" cy="76.00" r="4" fill="#fcfcfb" stroke="#52514e" stroke-width="2"/>
+<text x="674.6" y="80.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Node with no quotes</text>
+<line x1="64" y1="342.0" x2="932" y2="342.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="56.0" y="346.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.26</text>
+<line x1="64" y1="294.4" x2="932" y2="294.4" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="298.4" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.24</text>
+<line x1="64" y1="246.8" x2="932" y2="246.8" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="250.8" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.22</text>
+<line x1="64" y1="199.2" x2="932" y2="199.2" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="203.2" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.20</text>
+<line x1="64" y1="151.6" x2="932" y2="151.6" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="155.6" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.18</text>
+<line x1="64" y1="104.0" x2="932" y2="104.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="108.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">-0.16</text>
+<text x="107.4" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">1y</text>
+<text x="194.2" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">2y</text>
+<text x="281.0" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">3y</text>
+<text x="454.6" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">5y</text>
+<text x="628.2" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">7y</text>
+<text x="888.6" y="362.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">10y</text>
+<text x="932.0" y="384.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">Option expiry</text>
+<path d="M107.40,129.69 L194.20,158.64 L281.00,179.18 L454.60,208.13 L628.20,228.67 L888.60,251.41" fill="none" stroke="#898781" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,125.01 L194.20,158.19 L281.00,207.85 L454.60,194.74 L628.20,226.01 L888.60,283.81" fill="none" stroke="#eda100" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,135.86 L194.20,189.41 L281.00,200.67 L454.60,203.12 L628.20,217.24 L888.60,236.89" fill="none" stroke="#1baf7a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,119.24 L194.20,139.99 L281.00,158.02 L454.60,192.60 L628.20,231.12 L888.60,296.87" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,151.16 L194.20,191.00 L281.00,191.29 L454.60,224.72 L628.20,217.20 L888.60,290.43" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="107.40" cy="125.01" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="125.01" r="4" fill="#eda100"/>
+<circle cx="194.20" cy="158.19" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="158.19" r="4" fill="#eda100"/>
+<circle cx="281.00" cy="207.85" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="207.85" r="4" fill="#eda100"/>
+<circle cx="454.60" cy="194.74" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="194.74" r="4" fill="#eda100"/>
+<circle cx="628.20" cy="226.01" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="226.01" r="4" fill="#eda100"/>
+<circle cx="888.60" cy="283.81" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="283.81" r="4" fill="#eda100"/>
+<circle cx="107.40" cy="135.86" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="135.86" r="4" fill="#1baf7a"/>
+<circle cx="194.20" cy="189.41" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="189.41" r="4" fill="#1baf7a"/>
+<circle cx="281.00" cy="200.67" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="200.67" r="4" fill="#1baf7a"/>
+<circle cx="454.60" cy="203.12" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="203.12" r="4" fill="#1baf7a"/>
+<circle cx="628.20" cy="217.24" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="217.24" r="4" fill="#1baf7a"/>
+<circle cx="888.60" cy="236.89" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="236.89" r="4" fill="#1baf7a"/>
+<circle cx="107.40" cy="119.24" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="119.24" r="4" fill="#eb6834"/>
+<circle cx="194.20" cy="139.99" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="139.99" r="4" fill="#eb6834"/>
+<circle cx="281.00" cy="158.02" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="158.02" r="4" fill="#eb6834"/>
+<circle cx="454.60" cy="192.60" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="192.60" r="4" fill="#eb6834"/>
+<circle cx="888.60" cy="296.87" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="296.87" r="4" fill="#eb6834"/>
+<circle cx="628.20" cy="231.12" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="231.12" r="4" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<circle cx="107.40" cy="151.16" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="151.16" r="4" fill="#2a78d6"/>
+<circle cx="194.20" cy="191.00" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="191.00" r="4" fill="#2a78d6"/>
+<circle cx="454.60" cy="224.72" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="224.72" r="4" fill="#2a78d6"/>
+<circle cx="628.20" cy="217.20" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="217.20" r="4" fill="#2a78d6"/>
+<circle cx="888.60" cy="290.43" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="290.43" r="4" fill="#2a78d6"/>
+<circle cx="281.00" cy="191.29" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="191.29" r="4" fill="#fcfcfb" stroke="#2a78d6" stroke-width="2"/>
+<line x1="64" y1="412" x2="932" y2="412" stroke="#e1e0d9" stroke-width="1"/>
+<text x="64" y="454" font-size="16" font-weight="600" fill="#0b0b0b">Vol-of-vol ν (nu) by option expiry</text>
+<text x="64.0" y="475.0" font-size="13" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Sets the smile's curvature. It falls with expiry, so long-dated smiles are flatter. Recovered closely at every tenor.</text>
+<line x1="64" y1="500" x2="82" y2="500" stroke="#2a78d6" stroke-width="2.5" stroke-linecap="round"/>
+<text x="88.0" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">1y tenor</text>
+<line x1="171.6" y1="500" x2="189.6" y2="500" stroke="#eb6834" stroke-width="2.5" stroke-linecap="round"/>
+<text x="195.6" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">2y tenor</text>
+<line x1="279.2" y1="500" x2="297.2" y2="500" stroke="#1baf7a" stroke-width="2.5" stroke-linecap="round"/>
+<text x="303.2" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">5y tenor</text>
+<line x1="386.8" y1="500" x2="404.8" y2="500" stroke="#eda100" stroke-width="2.5" stroke-linecap="round"/>
+<text x="410.8" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">10y tenor</text>
+<line x1="501.6" y1="500" x2="519.6" y2="500" stroke="#898781" stroke-width="2.5" stroke-linecap="round"/>
+<text x="525.6" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Generating cube</text>
+<circle cx="664.60" cy="500.00" r="6" fill="#fcfcfb"/><circle cx="664.60" cy="500.00" r="4" fill="#fcfcfb" stroke="#52514e" stroke-width="2"/>
+<text x="674.6" y="504.0" font-size="12.5" fill="#52514e" text-anchor="start" style="font-variant-numeric: tabular-nums">Node with no quotes</text>
+<line x1="64" y1="766.0" x2="932" y2="766.0" stroke="#c3c2b7" stroke-width="1"/>
+<text x="56.0" y="770.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.25</text>
+<line x1="64" y1="718.4" x2="932" y2="718.4" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="722.4" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.30</text>
+<line x1="64" y1="670.8" x2="932" y2="670.8" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="674.8" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.35</text>
+<line x1="64" y1="623.2" x2="932" y2="623.2" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="627.2" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.40</text>
+<line x1="64" y1="575.6" x2="932" y2="575.6" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="579.6" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.45</text>
+<line x1="64" y1="528.0" x2="932" y2="528.0" stroke="#e1e0d9" stroke-width="1"/>
+<text x="56.0" y="532.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">0.50</text>
+<text x="107.4" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">1y</text>
+<text x="194.2" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">2y</text>
+<text x="281.0" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">3y</text>
+<text x="454.6" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">5y</text>
+<text x="628.2" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">7y</text>
+<text x="888.6" y="786.0" font-size="12" fill="#898781" text-anchor="middle" style="font-variant-numeric: tabular-nums">10y</text>
+<text x="932.0" y="808.0" font-size="12" fill="#898781" text-anchor="end" style="font-variant-numeric: tabular-nums">Option expiry</text>
+<path d="M107.40,578.70 L194.20,627.41 L281.00,658.55 L454.60,698.12 L628.20,723.41 L888.60,748.98" fill="none" stroke="#898781" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,578.73 L194.20,629.40 L281.00,658.15 L454.60,692.81 L628.20,710.77 L888.60,752.71" fill="none" stroke="#eda100" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,574.57 L194.20,625.66 L281.00,664.25 L454.60,692.39 L628.20,727.55 L888.60,753.30" fill="none" stroke="#1baf7a" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,584.37 L194.20,620.67 L281.00,648.42 L454.60,692.99 L628.20,725.11 L888.60,751.56" fill="none" stroke="#eb6834" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<path d="M107.40,585.64 L194.20,641.37 L281.00,664.73 L454.60,701.14 L628.20,725.27 L888.60,762.05" fill="none" stroke="#2a78d6" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+<circle cx="107.40" cy="578.73" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="578.73" r="4" fill="#eda100"/>
+<circle cx="194.20" cy="629.40" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="629.40" r="4" fill="#eda100"/>
+<circle cx="281.00" cy="658.15" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="658.15" r="4" fill="#eda100"/>
+<circle cx="454.60" cy="692.81" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="692.81" r="4" fill="#eda100"/>
+<circle cx="628.20" cy="710.77" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="710.77" r="4" fill="#eda100"/>
+<circle cx="888.60" cy="752.71" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="752.71" r="4" fill="#eda100"/>
+<circle cx="107.40" cy="574.57" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="574.57" r="4" fill="#1baf7a"/>
+<circle cx="194.20" cy="625.66" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="625.66" r="4" fill="#1baf7a"/>
+<circle cx="281.00" cy="664.25" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="664.25" r="4" fill="#1baf7a"/>
+<circle cx="454.60" cy="692.39" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="692.39" r="4" fill="#1baf7a"/>
+<circle cx="628.20" cy="727.55" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="727.55" r="4" fill="#1baf7a"/>
+<circle cx="888.60" cy="753.30" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="753.30" r="4" fill="#1baf7a"/>
+<circle cx="107.40" cy="584.37" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="584.37" r="4" fill="#eb6834"/>
+<circle cx="194.20" cy="620.67" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="620.67" r="4" fill="#eb6834"/>
+<circle cx="281.00" cy="648.42" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="648.42" r="4" fill="#eb6834"/>
+<circle cx="454.60" cy="692.99" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="692.99" r="4" fill="#eb6834"/>
+<circle cx="888.60" cy="751.56" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="751.56" r="4" fill="#eb6834"/>
+<circle cx="628.20" cy="725.11" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="725.11" r="4" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<circle cx="107.40" cy="585.64" r="6" fill="#fcfcfb"/><circle cx="107.40" cy="585.64" r="4" fill="#2a78d6"/>
+<circle cx="194.20" cy="641.37" r="6" fill="#fcfcfb"/><circle cx="194.20" cy="641.37" r="4" fill="#2a78d6"/>
+<circle cx="454.60" cy="701.14" r="6" fill="#fcfcfb"/><circle cx="454.60" cy="701.14" r="4" fill="#2a78d6"/>
+<circle cx="628.20" cy="725.27" r="6" fill="#fcfcfb"/><circle cx="628.20" cy="725.27" r="4" fill="#2a78d6"/>
+<circle cx="888.60" cy="762.05" r="6" fill="#fcfcfb"/><circle cx="888.60" cy="762.05" r="4" fill="#2a78d6"/>
+<circle cx="281.00" cy="664.73" r="6" fill="#fcfcfb"/><circle cx="281.00" cy="664.73" r="4" fill="#fcfcfb" stroke="#2a78d6" stroke-width="2"/>
+</svg>
